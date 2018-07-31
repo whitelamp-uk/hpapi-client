@@ -1,0 +1,181 @@
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+<!-- With thanks to html5boilerplate.com -->
+
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Test page</title>
+
+    <script defer src="./hpapi.js"></script>
+
+  </head>
+  <body class="www www-default">
+      <!--[if lte IE 9]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+      <![endif]-->
+
+    <form id="hpapi" action="" onsubmit="return false"><h1>hpapi.js test page</h1>
+      <span>&nbsp;</span>
+      <input id="hpapi-post" name="post" type="button" value="Post" />
+      <select disabled id="hpapi-status" name="status">
+        <option value="0">Editing</option>
+        <option value="1">Sending</option>
+        <option value="2">Received</option>
+      </select>
+      <p class="config">
+        <span class="legend">output element</span>
+        <span>:</span>
+        &quot;<input disabled type="text" name="target" value="my-element" />&quot;
+      </p>
+      <section class="transport"><h3>transport : {</h3>
+        <p class="config">
+          <span class="legend">connect timeout (secs)</span>
+          <span>:</span>
+          &quot;<input disabled type="text" name="timeout" value="15" />&quot;
+        </p>
+        <p class="config">
+          <span class="legend">url</span>
+          <span>:</span>
+          &quot;<input disabled type="text" name="url" value="https://hpapi.localhost:443/" />&quot;
+        </p>
+        <p class="config">
+          <span class="legend">password timeout (secs)</span>
+          <span>:</span>
+          &quot;<input disabled type="text" name="timeout" value="300" />&quot;
+        </p>
+        <h3>}</h3>
+      </section>
+      <section class="object"><h3>object : {</h3>
+        <p class="config">
+          <span class="legend">key</span>
+          <span>:</span>
+          &quot;<input disabled type="text" name="key" value="20180725104327::0e0f4ce8-8fee-11e8-902b-001f16148bc1" />&quot;
+        </p>
+        <p class="authenticate">
+          <span class="legend">email</span>
+          <span>:</span>
+          &quot;<input type="email" name="email" value="sysadmin@no.where" />&quot;
+        </p>
+        <p class="authenticate">
+          <span class="legend">password</span>
+          <span>:</span>
+          &quot;<input type="password" name="password" value="password" />&quot;
+        </p>
+        <section class="method"><h4>method : {</h4>
+          <p>
+            <span class="legend">vendor</span>
+            <span>:</span>
+            &quot;<input type="text" name="vendor" value="whitelamp" />&quot;
+          </p>
+          <p>
+            <span class="legend">package</span>
+            <span>:</span>
+            &quot;<input type="text" name="package" value="hpapi-utility" />&quot;
+          </p>
+          <p>
+            <span class="legend">class</span>
+            <span>:</span>
+            &quot;<input type="text" name="class" value="\Hpapi\Utility" />&quot;
+          </p>
+          <p>
+            <span class="legend">method</span>
+            <span>:</span>
+            &quot;<input type="text" name="method" value="uuid" />&quot;
+          </p>
+          <section class="argument"><h5>argument : {</h5>
+            <select id="hpapi-argcount" name="argcount">
+              <option value="0">No arguments</option>
+              <option value="1">1 argument</option>
+              <option value="2">2 arguments</option>
+              <option value="3">3 arguments</option>
+              <option value="4">4 arguments</option>
+              <option value="5">5 arguments</option>
+              <option value="6">6 arguments</option>
+              <option value="7">7 arguments</option>
+              <option value="8">8 arguments</option>
+              <option value="9">9 arguments</option>
+            </select>
+            <p>
+              <span class="legend">&nbsp;</span>
+              <span>:</span>
+              &quot;<input type="text" name="arg-0" value="example-value" />&quot;
+            </p>
+            <h5>}</h5>
+          </section>
+          <h4>}</h4>
+        </section>
+        <h3>}</h3>
+      </section>
+      <section class="monitor"><h3>monitor : {</h3>
+        <textarea id="hpapi-request" placeholder="Request object"></textarea>
+        <textarea id="hpapi-response" placeholder="Response object"></textarea>
+        <h3>}</h3>
+      </section>
+    </form>
+    <style>
+#hpapi {
+    display: block;
+}
+h1 {
+    margin: 0 1em 0 0;
+}
+#hpapi-post {
+    margin-bottom: 1em;
+}
+#hpapi-config {
+    background-color: #ffdddd;
+}
+section,ul,form,h3,h4 {
+    margin: 0;
+    padding: 0;
+}
+form p {
+    margin: 0;
+    padding: 0;
+}
+hr {
+    margin: 0.2em;
+}
+.legend {
+    display: inline-block;
+    width: 14em;
+}
+.legend + span {
+    display: inline-block;
+    width: 1em;
+}
+input {
+    width: 30em;
+}
+input[type=button] {
+    width: 10em;
+}
+input[type=radio] {
+    width: auto;
+}
+.monitor {
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+.monitor textarea {
+    display: block;
+    width: 40vw;
+    height: 35vh;
+    resize: vertical;
+    vertical-align: top;
+}
+.monitor #hpapi-response {
+    height: 85vh;
+}
+#hpapi > h1 {
+    display: inline;
+}
+    </style>
+
+  </body>
+</html>
