@@ -8,44 +8,63 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Test page</title>
+    <title>hpapi.js test page</title>
 
     <script defer src="./hpapi.js"></script>
+    <script defer src="./test.js"></script>
 
   </head>
-  <body class="www www-default">
+  <body>
       <!--[if lte IE 9]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
       <![endif]-->
+    
+    <a href="#" onclick="return testme()" style="position:absolute;left:37.5em;top:1.7em">Test</a>
 
-    <form id="hpapi" action="" onsubmit="return false"><h1>hpapi.js test page</h1>
-      <span>&nbsp;</span>
-      <input id="hpapi-post" name="post" type="button" value="Post" />
-      <select disabled id="hpapi-status" name="status">
-        <option value="0">Editing</option>
-        <option value="1">Sending</option>
-        <option value="2">Received</option>
+    <form class="myapp" action="" onsubmit="return false">
+
+    </form>
+
+    <form class="hpapi" action="" onsubmit="return false">
+      <input type="hidden" name="json_pretty_string" value="    " />
+      <h1 class="title">hpapi.js test page</h1>
+      <select disabled class="status">
+        <option value="0">Status</option>
+        <option value="1">Opened</option>
+        <option value="2">Headers received</option>
+        <option value="3">Loading</option>
+        <option value="4">Done</option>
+        <option value="200">200 OK</option>
+        <option value="403">403 Not allowed</option>
+        <option value="404">404 Not found</option>
+        <option value="599">599 Timed out</option>
+        <option value="999">999 Other status</option>
       </select>
+      <span>&nbsp;</span>
+      <button class="post">Post</button>
+      <button class="timeout hidden">Timeout</button>
+      <button class="error hidden">Error</button>
+      <button class="ready hidden">Ready</button>
       <p class="config">
         <span class="legend">output element</span>
         <span>:</span>
-        &quot;<input disabled type="text" name="target" value="my-element" />&quot;
+        <input type="text" name="txnid" value="" />
       </p>
-      <section class="transport"><h3>transport : {</h3>
+      <section class="connection"><h3>transport : {</h3>
         <p class="config">
           <span class="legend">connect timeout (secs)</span>
           <span>:</span>
-          &quot;<input disabled type="text" name="timeout" value="15" />&quot;
+          <input type="text" name="to_connect" value="4" />
         </p>
         <p class="config">
           <span class="legend">url</span>
           <span>:</span>
-          &quot;<input disabled type="text" name="url" value="https://hpapi.localhost:443/" />&quot;
+          <input type="text" name="url" value="https://hpapi.localhost/" />
         </p>
         <p class="config">
           <span class="legend">password timeout (secs)</span>
           <span>:</span>
-          &quot;<input disabled type="text" name="timeout" value="300" />&quot;
+          <input type="text" name="to_password" value="300" />
         </p>
         <h3>}</h3>
       </section>
@@ -53,43 +72,43 @@
         <p class="config">
           <span class="legend">key</span>
           <span>:</span>
-          &quot;<input disabled type="text" name="key" value="20180725104327::0e0f4ce8-8fee-11e8-902b-001f16148bc1" />&quot;
+          <input type="text" name="key" value="20180725104327::0e0f4ce8-8fee-11e8-902b-001f16148bc1" />
         </p>
         <p class="authenticate">
           <span class="legend">email</span>
           <span>:</span>
-          &quot;<input type="email" name="email" value="sysadmin@no.where" />&quot;
+          <input type="email" name="email" value="sysadmin@no.where" />
         </p>
         <p class="authenticate">
           <span class="legend">password</span>
           <span>:</span>
-          &quot;<input type="password" name="password" value="password" />&quot;
+          <input type="password" name="password" value="password" />
         </p>
         <section class="method"><h4>method : {</h4>
           <p>
             <span class="legend">vendor</span>
             <span>:</span>
-            &quot;<input type="text" name="vendor" value="whitelamp" />&quot;
+            <input type="text" name="vendor" value="whitelamp" />
           </p>
           <p>
             <span class="legend">package</span>
             <span>:</span>
-            &quot;<input type="text" name="package" value="hpapi-utility" />&quot;
+            <input type="text" name="package" value="hpapi-utility" />
           </p>
           <p>
             <span class="legend">class</span>
             <span>:</span>
-            &quot;<input type="text" name="class" value="\Hpapi\Utility" />&quot;
+            <input type="text" name="class" value="\Hpapi\Utility" />
           </p>
           <p>
             <span class="legend">method</span>
             <span>:</span>
-            &quot;<input type="text" name="method" value="uuid" />&quot;
+            <input type="text" name="method" value="" />
           </p>
-          <section class="argument"><h5>argument : {</h5>
-            <select id="hpapi-argcount" name="argcount">
+          <section class="arguments"><h5>argument : {</h5>
+            <select name="argcount">
               <option value="0">No arguments</option>
-              <option value="1">1 argument</option>
+              <option value="1" selected="selected">1 argument</option>
               <option value="2">2 arguments</option>
               <option value="3">3 arguments</option>
               <option value="4">4 arguments</option>
@@ -99,81 +118,155 @@
               <option value="8">8 arguments</option>
               <option value="9">9 arguments</option>
             </select>
-            <p>
-              <span class="legend">&nbsp;</span>
-              <span>:</span>
-              &quot;<input type="text" name="arg-0" value="example-value" />&quot;
-            </p>
+            <section class="arglist">
+              <input type="text" class="argument" name="arg_1" placeholder="Argument 1" value="" />
+              <input type="text" class="argument" name="arg_2" placeholder="Argument 2" value="" />
+              <input type="text" class="argument" name="arg_3" placeholder="Argument 3" value="" />
+              <input type="text" class="argument" name="arg_4" placeholder="Argument 4" value="" />
+              <input type="text" class="argument" name="arg_5" placeholder="Argument 5" value="" />
+              <input type="text" class="argument" name="arg_6" placeholder="Argument 6" value="" />
+              <input type="text" class="argument" name="arg_7" placeholder="Argument 7" value="" />
+              <input type="text" class="argument" name="arg_8" placeholder="Argument 8" value="" />
+              <input type="text" class="argument" name="arg_9" placeholder="Argument 9" value="" />
+            </section>
             <h5>}</h5>
           </section>
           <h4>}</h4>
         </section>
         <h3>}</h3>
       </section>
-      <section class="monitor"><h3>monitor : {</h3>
-        <textarea id="hpapi-request" placeholder="Request object"></textarea>
-        <textarea id="hpapi-response" placeholder="Response object"></textarea>
-        <h3>}</h3>
+      <section class="transport">
+        <textarea class="request" placeholder="Request object"></textarea>
+      </section>
+    </form>
+    <form class="hpapi hpapi-hidden" action="" onsubmit="return false">
+      <input type="hidden" name="json_pretty_string" value="    " />
+      <select disabled class="status">
+        <option value="0">Status</option>
+        <option value="1">Opened</option>
+        <option value="2">Headers received</option>
+        <option value="3">Loading</option>
+        <option value="4">Done</option>
+        <option value="200">200 OK</option>
+        <option value="403">403 Not allowed</option>
+        <option value="404">404 Not found</option>
+        <option value="599">599 Timed out</option>
+        <option value="999">99 Other status</option>
+      </select>
+      <button class="post">Post</button>
+      <button class="timeout hidden">Timeout</button>
+      <button class="error hidden">Error</button>
+      <button class="ready hidden">Ready</button>
+      <input type="text" name="txnid" />
+      <section class="connection">
+        <input type="text" name="to_connect" value="4" />
+        <input type="text" name="url" />
+        <input type="text" name="to_password" value="300" />
+      </section>
+      <section class="object">
+        <input type="text" name="key" value="20180725104327::0e0f4ce8-8fee-11e8-902b-001f16148bc1" />
+        <input type="email" name="email" />
+        <input type="password" name="password" />
+        <section class="method">
+          <input type="text" name="vendor" />
+          <input type="text" name="package" />
+          <input type="text" name="class" />
+          <input type="text" name="method" />
+          <section class="arguments">
+            <select name="argcount">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+            </select>
+            <section class="arglist">
+              <input type="text" class="argument" name="arg_1" />
+              <input type="text" class="argument" name="arg_2" />
+              <input type="text" class="argument" name="arg_3" />
+              <input type="text" class="argument" name="arg_4" />
+              <input type="text" class="argument" name="arg_5" />
+              <input type="text" class="argument" name="arg_6" />
+              <input type="text" class="argument" name="arg_7" />
+              <input type="text" class="argument" name="arg_8" />
+              <input type="text" class="argument" name="arg_9" />
+            </section>
+        </section>
+      </section>
+      <section class="transport">
+        <textarea class="request"></textarea>
       </section>
     </form>
     <style>
-#hpapi {
-    display: block;
+form.hpapi-hidden {
+    display: none;
 }
-h1 {
+form.hpapi-hidden * {
+    display: none;
+}
+form.hpapi h1.title {
+    display: inline-block;
     margin: 0 1em 0 0;
 }
-#hpapi-post {
-    margin-bottom: 1em;
-}
-#hpapi-config {
+form.hpapi {
     background-color: #ffdddd;
 }
-section,ul,form,h3,h4 {
+form.hpapi section,ul,form,h3,h4 {
     margin: 0;
     padding: 0;
 }
-form p {
+form.hpapi p {
     margin: 0;
     padding: 0;
 }
-hr {
+form.hpapi hr {
     margin: 0.2em;
 }
-.legend {
+form.hpapi .legend {
     display: inline-block;
     width: 14em;
 }
-.legend + span {
+form.hpapi .legend + span {
     display: inline-block;
-    width: 1em;
+    width: 1.5em;
 }
-input {
+form.hpapi input {
     width: 30em;
 }
-input[type=button] {
-    width: 10em;
+form.hpapi input.argument {
+    display: block;
+    margin-left: 21.5em;
 }
-input[type=radio] {
-    width: auto;
+form.hpapi button.post {
+    display: inline-block;
+    width: 5em;
+    margin-bottom: 1em;
 }
-.monitor {
+form.hpapi button.hidden {
+    display: none;
+}
+form.hpapi select.status {
+    width: 12em;
+}
+form.hpapi section.transport {
     position: fixed;
     right: 0;
     top: 0;
 }
-.monitor textarea {
+form.hpapi section.transport textarea {
     display: block;
     width: 40vw;
     height: 35vh;
     resize: vertical;
     vertical-align: top;
 }
-.monitor #hpapi-response {
-    height: 85vh;
-}
-#hpapi > h1 {
-    display: inline;
+form.hpapi section.transport textarea.response {
+    height: 94vh;
 }
     </style>
 
