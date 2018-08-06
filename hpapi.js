@@ -105,7 +105,6 @@
             var sts = frm.getElementsByClassName ('status')[0];
             var xhr = new XMLHttpRequest ();
                 xhr.onreadystatechange = function() {
-                    console.log ();
                     for (var idx in sts.options) {
                         if (sts.options[idx].value==xhr.readyState) {
                             sts.selectedIndex = idx;
@@ -116,6 +115,7 @@
                         return;
                     }
                     if (xhr.responseText.length==0) {
+                        console.log ('txnid '+tid+', onreadystatechange(): READY STATE 4, NO RESPONSE TEXT');
                         return;
                     }
                     for (var idx in sts.options) {
@@ -124,6 +124,8 @@
                             break;
                         }
                     }
+                    console.log ('txnid '+tid+', onreadystatechange(): READY STATE 4, RESPONSE TEXT FOUND');
+                    tgt.value = xhr.responseText; 
                 }
                 xhr.onerror = function() {
                     for (var idx in sts.options) {
@@ -133,6 +135,7 @@
                         }
                     }
                     tgt.value = '001 HTTP error '+xhr.status;
+                    console.log ('txnid '+tid+', onerror(): HTTP ERROR');
                     err.click ();
                 }
                 xhr.ontimeout = function() {
@@ -143,6 +146,7 @@
                         }
                     }
                     tgt.value = '000 Request timed out';
+                    console.log ('txnid '+tid+', ontimeout(): CONNECTION TIMED OUT');
                     tim.click ();
                 }
                 xhr.onloadend = function() {
@@ -156,7 +160,6 @@
                             break;
                         }
                     }
-                    tgt.value = xhr.responseText; 
                     console.log ('txnid '+tid+', onloadend(): LOADING COMPLETED');
                     rdy.click ();
                 }
@@ -164,7 +167,9 @@
                 tgt.value = '';
                 xhr.open ('POST',url,true);
                 xhr.timeout = toc;
+                console.log ('txnid '+tid+', Setting request header Content-Type: application/json');
                 xhr.setRequestHeader ("Content-Type","application/json");
+                console.log ('txnid '+tid+', Sending request...');
                 xhr.send (req);
         }
 

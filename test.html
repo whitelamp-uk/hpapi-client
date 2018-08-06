@@ -46,7 +46,7 @@
       <button class="error hidden">Error</button>
       <button class="ready hidden">Ready</button>
       <p class="config">
-        <span class="legend">output element</span>
+        <span class="legend">txn (element) id</span>
         <span>:</span>
         <input type="text" name="txnid" value="" />
       </p>
@@ -59,9 +59,9 @@
         <p class="config">
           <span class="legend">url</span>
           <span>:</span>
-          <input type="text" name="url" value="https://hpapi.localhost/" />
+          <input type="text" name="url" value="https://" />
         </p>
-        <p class="config">
+        <p class="config" style="display:none">
           <span class="legend">password timeout (secs)</span>
           <span>:</span>
           <input type="text" name="to_password" value="300" />
@@ -107,8 +107,8 @@
           </p>
           <section class="arguments"><h5>argument : {</h5>
             <select name="argcount">
-              <option value="0">No arguments</option>
-              <option value="1" selected="selected">1 argument</option>
+              <option value="0">0 arguments</option>
+              <option value="1">1 argument</option>
               <option value="2">2 arguments</option>
               <option value="3">3 arguments</option>
               <option value="4">4 arguments</option>
@@ -164,7 +164,7 @@
         <input type="text" name="to_password" value="300" />
       </section>
       <section class="object">
-        <input type="text" name="key" value="20180725104327::0e0f4ce8-8fee-11e8-902b-001f16148bc1" />
+        <input type="text" name="key" />
         <input type="email" name="email" />
         <input type="password" name="password" />
         <section class="method">
