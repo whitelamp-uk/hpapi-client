@@ -19,16 +19,18 @@
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
       <![endif]-->
     
+
+
+<!-- LINK TO INVOKE TEST FUNCTION -->
     <a href="#" onclick="return testme()" style="position:absolute;left:37.5em;top:1.7em">Test</a>
 
-    <form class="myapp" action="" onsubmit="return false">
 
-    </form>
 
+<!-- HUMAN READABLE "MAX" EXAMPLE FOR TESTING (MULTIPLE FORMS PER PAGE ALLOWED) -->
     <form class="hpapi" action="" onsubmit="return false">
       <input type="hidden" name="json_pretty_string" value="    " />
       <h1 class="title">hpapi.js test page</h1>
-      <select disabled class="status">
+      <select disabled name="status" class="status">
         <option value="0">Status</option>
         <option value="1">Opened</option>
         <option value="2">Headers received</option>
@@ -43,8 +45,18 @@
       <span>&nbsp;</span>
       <button class="post">Post</button>
       <button class="timeout hidden">Timeout</button>
-      <button class="error hidden">Error</button>
+      <button class="err hidden">Error</button>
       <button class="ready hidden">Ready</button>
+      <br/>
+      <input disabled name="code" />
+      <input disabled name="error" />
+      <input disabled name="warning" />
+      <input disabled name="notice" />
+      <p class="config">
+        <span class="legend">txn (element) id</span>
+        <span>:</span>
+        <input type="text" name="txnid" value="" />
+      </p>
       <p class="config">
         <span class="legend">txn (element) id</span>
         <span>:</span>
@@ -139,9 +151,13 @@
         <textarea class="request" placeholder="Request object"></textarea>
       </section>
     </form>
+
+
+
+<!-- STANDARD "MIN" EXAMPLE FOR DEPLOYMENT (MULTIPLE FORMS PER PAGE ALLOWED) -->
     <form class="hpapi hpapi-hidden" action="" onsubmit="return false">
       <input type="hidden" name="json_pretty_string" value="    " />
-      <select disabled class="status">
+      <select disabled name="status" class="status">
         <option value="0">Status</option>
         <option value="1">Opened</option>
         <option value="2">Headers received</option>
@@ -154,9 +170,13 @@
         <option value="999">99 Other status</option>
       </select>
       <button class="post">Post</button>
-      <button class="timeout hidden">Timeout</button>
-      <button class="error hidden">Error</button>
-      <button class="ready hidden">Ready</button>
+      <button class="timeout">Timeout</button>
+      <button class="err">Error</button>
+      <button class="ready">Ready</button>
+      <input disabled name="code" />
+      <input disabled name="error" />
+      <input disabled name="warning" />
+      <input disabled name="notice" />
       <input type="text" name="txnid" />
       <section class="connection">
         <input type="text" name="to_connect" value="4" />

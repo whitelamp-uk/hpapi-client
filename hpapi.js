@@ -5,6 +5,7 @@
 
         _init : function ( ) {
             var forms          = document.getElementsByClassName ('hpapi');
+            // For each hpapi form found
             for (var i in forms) {
                 if (parseInt(i)!=i) {
                     continue;
@@ -17,6 +18,7 @@
                     console.log ('hpapi._init(): a form has no post button - skipping');
                     continue;
                 }
+                // Add event listener to this form "Post" button
                 try {
                     post.addEventListener('click',hpapi.post);
                 }
@@ -34,19 +36,19 @@
                 var tid     = frm.txnid.value;
                 var jps     = frm.json_pretty_string.value;
                 var obj     = {
-                    txnid : tid
-                   ,key : frm.key.value
-                   ,email : frm.email.value
-                   ,password : frm.password.value
-                   ,datetime : new Date().toISOString()
-                   ,method : {
-                        vendor : frm.vendor.value
-                       ,package : frm.package.value
-                       ,class : frm.class.value
-                       ,method : frm.method.value
-                       ,arguments : new Array ()
+                        txnid : tid
+                       ,key : frm.key.value
+                       ,email : frm.email.value
+                       ,password : frm.password.value
+                       ,datetime : new Date().toISOString()
+                       ,method : {
+                            vendor : frm.vendor.value
+                           ,package : frm.package.value
+                           ,class : frm.class.value
+                           ,method : frm.method.value
+                           ,arguments : new Array ()
+                        }
                     }
-                }
                 var args    = frm.getElementsByClassName ('argument');
                 for (i in args) {
                     if (parseInt(i)!=i) {
@@ -100,10 +102,15 @@
                 toc    *=  1000;
             }
             var tim = frm.getElementsByClassName ('timeout')[0];
-            var err = frm.getElementsByClassName ('error')[0];
+            var err = frm.getElementsByClassName ('err')[0];
             var rdy = frm.getElementsByClassName ('ready')[0];
-            var sts = frm.getElementsByClassName ('status')[0];
+            var sts = frm.status;
+            var cod = frm.code;
+            var erm = frm.error;
+            var wnm = frm.warning;
+            var ntc = frm.notice;
             var xhr = new XMLHttpRequest ();
+            // Event handlers define
                 xhr.onreadystatechange = function() {
                     for (var idx in sts.options) {
                         if (sts.options[idx].value==xhr.readyState) {
@@ -134,7 +141,7 @@
                             break;
                         }
                     }
-                    tgt.value = '001 HTTP error '+xhr.status;
+                    tgt.value = '002 HTTP error '+xhr.status;
                     console.log ('txnid '+tid+', onerror(): HTTP ERROR');
                     err.click ();
                 }
@@ -145,7 +152,7 @@
                             break;
                         }
                     }
-                    tgt.value = '000 Request timed out';
+                    tgt.value = '001 Request timed out';
                     console.log ('txnid '+tid+', ontimeout(): CONNECTION TIMED OUT');
                     tim.click ();
                 }
@@ -161,8 +168,48 @@
                         }
                     }
                     console.log ('txnid '+tid+', onloadend(): LOADING COMPLETED');
+                    console.log ('txnid '+tid+', onloadend(): parsing codes and messages');
+                    var code        = '0';
+                    try {
+                        var object  = JSON.parse (tgt.value);
+                        var error   = object.response.error;
+                        var warning = object.response.warning;
+                        var notice  = object.response.notice;
+                    }
+                    catch (e) {
+                        var error   = tgt.value;
+                        var warning = '';
+                        var notice  = '';
+                    }
+                    // Extract codes from error message
+                    if (error.length) {
+                        parts           = error.split (' ');
+                        if (parts[0].match(/^[0-9]+$/)) {
+                            code    = parts[0];
+                            parts.shift ();
+                            if (parts[0].match(/^[0-9]+$/)) {
+                                for (var idx in sts.options) {
+                                    if (sts.options[idx].value==parts[0]) {
+                                        sts.selectedIndex = idx;
+                                        break;
+                                    }
+                                }
+                                parts.shift ();
+                            }
+                            error   = parts.join (' ');
+                        }
+                    }
+                    // Load codes and messages into form
+                    cod.value       = code;
+                    erm.value       = error;
+                    wnm.value       = warning;
+                    ntc.value       = notice;
+                    // Click the ready button
+                    console.log ('txnid '+tid+', onloadend(): READY');
                     rdy.click ();
                 }
+            // Event handlers done
+            // Initialise request
                 sts.selectedIndex = 0;
                 tgt.value = '';
                 xhr.open ('POST',url,true);
