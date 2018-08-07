@@ -173,6 +173,7 @@
                     try {
                         var object  = JSON.parse (tgt.value);
                         var error   = object.response.error;
+                        console.log ('txnid '+tid+', onloadend(): object error='+error);
                         var warning = object.response.warning;
                         var notice  = object.response.notice;
                     }
@@ -181,8 +182,9 @@
                         var warning = '';
                         var notice  = '';
                     }
+                    console.log ('txnid '+tid+', onloadend(): system error='+error);
                     // Extract codes from error message
-                    if (error.length) {
+                    if (error!=null && error.length) {
                         parts           = error.split (' ');
                         if (parts[0].match(/^[0-9]+$/)) {
                             code    = parts[0];

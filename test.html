@@ -22,7 +22,7 @@
 
 
 <!-- LINK TO INVOKE TEST FUNCTION -->
-    <a href="#" onclick="return testme()" style="position:absolute;left:37.5em;top:1.7em">Test</a>
+    <a id="test-link" href="#" style="position:absolute;left:40em;top:1.5em">Test</a>
 
 
 
@@ -47,16 +47,22 @@
       <button class="timeout hidden">Timeout</button>
       <button class="err hidden">Error</button>
       <button class="ready hidden">Ready</button>
-      <br/>
-      <input disabled name="code" />
-      <input disabled name="error" />
-      <input disabled name="warning" />
-      <input disabled name="notice" />
-      <p class="config">
-        <span class="legend">txn (element) id</span>
-        <span>:</span>
-        <input type="text" name="txnid" value="" />
-      </p>
+      <div>
+        <span class="legend">&nbsp;</span>
+        <span>&nbsp;</span>
+        <input type="text" disabled class="code" name="code" value="000" />
+        <input type="text" disabled class="error" name="error" placeholder="[No error message]" />
+      </div>
+      <div>
+        <span class="legend">&nbsp;</span>
+        <span>&nbsp;</span>
+        <input type="text" disabled class="warning" name="warning" placeholder="[No warning]" />
+      </div>
+      <div>
+        <span class="legend">&nbsp;</span>
+        <span>&nbsp;</span>
+        <textarea disabled class="notice" name="notice" placeholder="[No notices(s)]"></textarea>
+      </div>
       <p class="config">
         <span class="legend">txn (element) id</span>
         <span>:</span>
@@ -110,7 +116,7 @@
           <p>
             <span class="legend">class</span>
             <span>:</span>
-            <input type="text" name="class" value="\Hpapi\Utility" />
+            <input type="text" name="class" value="" />
           </p>
           <p>
             <span class="legend">method</span>
@@ -157,7 +163,7 @@
 <!-- STANDARD "MIN" EXAMPLE FOR DEPLOYMENT (MULTIPLE FORMS PER PAGE ALLOWED) -->
     <form class="hpapi hpapi-hidden" action="" onsubmit="return false">
       <input type="hidden" name="json_pretty_string" value="    " />
-      <select disabled name="status" class="status">
+      <select disabled name="status">
         <option value="0">Status</option>
         <option value="1">Opened</option>
         <option value="2">Headers received</option>
@@ -167,16 +173,16 @@
         <option value="403">403 Not allowed</option>
         <option value="404">404 Not found</option>
         <option value="599">599 Timed out</option>
-        <option value="999">99 Other status</option>
+        <option value="999">999 Other status</option>
       </select>
       <button class="post">Post</button>
       <button class="timeout">Timeout</button>
       <button class="err">Error</button>
       <button class="ready">Ready</button>
-      <input disabled name="code" />
+      <input disabled name="code" value="000"/>
       <input disabled name="error" />
       <input disabled name="warning" />
-      <input disabled name="notice" />
+      <textarea name="notice"></textarea>
       <input type="text" name="txnid" />
       <section class="connection">
         <input type="text" name="to_connect" value="4" />
@@ -230,7 +236,7 @@ form.hpapi-hidden * {
     display: none;
 }
 form.hpapi h1.title {
-    display: inline-block;
+    float:left;
     margin: 0 1em 0 0;
 }
 form.hpapi {
@@ -271,7 +277,26 @@ form.hpapi button.hidden {
     display: none;
 }
 form.hpapi select.status {
-    width: 12em;
+    width: 20em;
+    margin-top: 1em;
+    margin-left: -1em;
+}
+form.hpapi input.code {
+    width: 3em;
+    text-align: center;
+}
+form.hpapi input.error {
+    width: 26.4em;
+}
+form.hpapi input.warning {
+    margin-left: 3.6em;
+    width: 26.4em;
+}
+form.hpapi textarea.notice {
+    margin-left: 3.6em;
+    width: 26.25em;
+    height: 2.5em;
+    resize: vertical;
 }
 form.hpapi section.transport {
     position: fixed;
