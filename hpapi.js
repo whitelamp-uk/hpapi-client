@@ -66,7 +66,6 @@
                 pst.json.value          = JSON.stringify (obj,null,jps);
                 document.body.appendChild (pst);
                 frm.password.value      = '';
-console.log (pst.post);
                 pst.post.addEventListener ('click',this.post.bind(this));
                 frm.created.click();
                 return;
