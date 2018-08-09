@@ -4,38 +4,32 @@
     var hpapi = {
 
         _init : function ( ) {
-            var forms          = document.getElementsByClassName ('hpapi');
-            // For each hpapi form found
-            for (var i in forms) {
-                if (parseInt(i)!=i) {
-                    continue;
-                }
-                forms[i].reset ();
-                try {
-                    var post = forms[i].getElementsByClassName ('post')[0];
-                }
-                catch (e) {
-                    console.log ('hpapi._init(): a form has no post button - skipping');
-                    continue;
-                }
-                // Add event listener to this form "Post" button
-                try {
-                    post.addEventListener('click',hpapi.post);
-                }
-                catch (e) {
-                    console.log ('hpapi._init(): could not listen for post button');
-                }
+            var frm     = document.getElementById ('hpapi-new');
+            frm.reset ();
+            try {
+                frm.new.addEventListener('click',this.create.bind(this));
+            }
+            catch (e) {
+                console.log ('hpapi._init(): could not listen to button name="new"');
             }
         }
 
-       ,post : function (buttonEvent) {
+       ,create : function (buttonEvent) {
+            buttonEvent.preventDefault ();
             try {
-                var frm     = buttonEvent.target.form;
-                var toc     = frm.to_connect.value;
-                var url     = frm.url.value;
-                var tid     = frm.txnid.value;
-                var jps     = frm.json_pretty_string.value;
-                var obj     = {
+                var frm                 = buttonEvent.target.form;
+                if (frm.txnid.value.length==0) {
+                    console.log ('hpapi.create(): txnid was not given');
+                    return;
+                }
+                var r = new RegExp (/^https?\:\/\/[^\s]+/);
+                if (!r.test(frm.url.value)) {
+                    console.log ('hpapi.create(): URL is not valid');
+                    return;
+                }
+                var tid                 = frm.txnid.value;
+                var jps                 = frm.json_pretty_string.value;
+                var obj                 = {
                         txnid : tid
                        ,key : frm.key.value
                        ,email : frm.email.value
@@ -49,7 +43,7 @@
                            ,arguments : new Array ()
                         }
                     }
-                var args    = frm.getElementsByClassName ('argument');
+                var args                = frm.getElementsByClassName ('argument');
                 for (i in args) {
                     if (parseInt(i)!=i) {
                         continue;
@@ -58,52 +52,45 @@
                         obj.method.arguments.push (args[i].value);
                     }
                     else {
-                        args[i].value = '';
+                        args[i].value   = '';
                     }
                 }
-                var req     = JSON.stringify (obj,null,jps);
-            }
-            catch (e) {
-                console.log ('hpapi.post() failed [1]: '+e);
+                var pst                 = document.getElementById ('hpapi-template').cloneNode(true);
+                pst.setAttribute ('id',tid);
+                pst.txnid.value         = frm.txnid.value;
+                pst.url.value           = frm.url.value;
+                pst.timeout.value       = frm.timeout.value;
+                pst.key.value           = frm.key.value;
+                pst.email.value         = frm.email.value;
+                pst.password.value      = frm.password.value;
+                pst.json.value          = JSON.stringify (obj,null,jps);
+                document.body.appendChild (pst);
+                frm.password.value      = '';
+console.log (pst.post);
+                pst.post.addEventListener ('click',this.post.bind(this));
+                frm.created.click();
                 return;
             }
-            var tgt         = document.getElementById (tid);
-            if (!tgt) {
-                try {
-                    var tgt = document.createElement ('textarea');
-                        tgt.setAttribute ('id',tid);
-                        tgt.setAttribute ('class','response');
-                        tgt.setAttribute ('name','response');
-                        tgt.setAttribute ('placeholder','Response object');
-                    frm.getElementsByClassName('transport')[0].appendChild (tgt);
-                }
-                catch (e) {
-                    console.log ('hpapi.(post) failed [2]: '+e);
-                    return;
-                }
+            catch (e) {
+                console.log ('hpapi.create(): '+e);
+                return;
             }
-            var args = frm.getElementsByClassName ('arguments');
-            for (var i in args) {
-                if (parseInt(i)!=i) {
-                    continue;
-                }
-                obj.method.arguments.push (args[i].value);
-            }
+        }
+
+       ,post : function (buttonEvent) {
+            buttonEvent.preventDefault ();
             try {
-                frm.getElementsByClassName('request')[0].value = req;
+                var frm = buttonEvent.target.form;
+                var tgt = frm.json;
             }
             catch (e) {
-                console.log ('Request log element not found: '+e);
+                console.log ('hpapi.post(): '+e);
+                return;
             }
-            if (isNaN(toc)) {
-                toc     = 10000;
-            }
-            else {
-                toc    *=  1000;
-            }
-            var tim = frm.getElementsByClassName ('timeout')[0];
-            var err = frm.getElementsByClassName ('err')[0];
-            var rdy = frm.getElementsByClassName ('ready')[0];
+            var tid = frm.txnid.value;
+            var url = frm.url.value;
+            var toc = 1000*frm.timeout.value;
+            var rdy = frm.ready;
             var sts = frm.status;
             var cod = frm.code;
             var erm = frm.error;
@@ -143,7 +130,6 @@
                     }
                     tgt.value = '002 HTTP error '+xhr.status;
                     console.log ('txnid '+tid+', onerror(): HTTP ERROR');
-                    err.click ();
                 }
                 xhr.ontimeout = function() {
                     for (var idx in sts.options) {
@@ -154,7 +140,6 @@
                     }
                     tgt.value = '001 Request timed out';
                     console.log ('txnid '+tid+', ontimeout(): CONNECTION TIMED OUT');
-                    tim.click ();
                 }
                 xhr.onloadend = function() {
                     var s = xhr.status;
@@ -206,6 +191,7 @@
                     erm.value       = error;
                     wnm.value       = warning;
                     ntc.value       = notice;
+                    tgt.classList.add ('completed');
                     // Click the ready button
                     console.log ('txnid '+tid+', onloadend(): READY');
                     rdy.click ();
@@ -219,7 +205,7 @@
                 console.log ('txnid '+tid+', Setting request header Content-Type: application/json');
                 xhr.setRequestHeader ("Content-Type","application/json");
                 console.log ('txnid '+tid+', Sending request...');
-                xhr.send (req);
+                xhr.send (frm.json.value);
         }
 
     }
