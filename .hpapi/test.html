@@ -22,20 +22,22 @@
 <!-- LINK TO INVOKE TEST FUNCTION -->
     <a id="test-link" href="#" style="position:fixed;right:3vw;top:2.5em;z-index:999">Test</a>
 
+
+
 <!-- HPAPI CREATE NEW REQUEST FORM (HUMAN READABLE VERSION) -->
     <form id="hpapi-new" action="" onsubmit="return false">
       <input type="hidden" name="json_pretty_string" value="    " />
+      <p class="config">
+        <span class="legend">url</span>
+        <span>:</span>
+        <input type="text" name="url" value="https://" />
+      </p>
       <p>
         <span class="legend">txnid</span>
         <span>:</span>
         <input type="text" name="txnid" value="" />
         <button name="new">New</button>
         <button name="created">Created</button>
-      </p>
-      <p class="config">
-        <span class="legend">url</span>
-        <span>:</span>
-        <input type="text" name="url" value="https://" />
       </p>
       <p>
         <span class="legend">connect timeout (secs)</span>
@@ -60,7 +62,7 @@
       <p>
         <span class="legend">vendor</span>
         <span>:</span>
-        <input type="text" name="vendor" value="whitelamp" />
+        <input type="text" name="vendor" value="whitelamp-uk" />
       </p>
       <p>
         <span class="legend">package</span>
@@ -139,135 +141,6 @@
         <input type="text" class="argument" name="arg_9" placeholder="Argument 9" value="" />
       </p>
     </form>
-
-
-
-
-<!-- HPAPI CREATE NEW REQUEST FORM (PRODUCTION VERSION) -->
-<!--
-    <form id="hpapi-new" class="hpapi-hidden" action="" onsubmit="return false">
-      <input type="hidden" name="json_pretty_string" value="    " />
-      <input type="text" name="txnid" />
-      <input type="text" name="url" />
-      <input type="text" name="timeout" value="4" />
-      <input type="text" name="key" />
-      <input type="email" name="email" />
-      <input type="password" name="password" />
-      <input type="text" name="vendor" />
-      <input type="text" name="package" />
-      <input type="text" name="class" />
-      <input type="text" name="method" />
-      <select name="argcount">
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-      </select>
-      <input type="text" class="argument" name="arg_1" />
-      <input type="text" class="argument" name="arg_2" />
-      <input type="text" class="argument" name="arg_3" />
-      <input type="text" class="argument" name="arg_4" />
-      <input type="text" class="argument" name="arg_5" />
-      <input type="text" class="argument" name="arg_6" />
-      <input type="text" class="argument" name="arg_7" />
-      <input type="text" class="argument" name="arg_8" />
-      <input type="text" class="argument" name="arg_9" />
-    </form>
--->
-
-
-
-
-
-<!-- HPAPI REQUEST FORM TEMPLATE (HUMAN READABLE VERSION) -->
-    <form id="hpapi-template" class="hpapi-request">
-      <input type="hidden" name="txnid" />
-      <p>
-        <input disabled type="text" name="url" />
-        <button name="post">Post</button>
-      </p>
-      <p>
-        <input disabled type="text" name="timeout" />
-        <button name="ready">Ready</button>
-      </p>
-      <p>
-        <input type="text" name="key" />
-        <input type="email" name="email" />
-        <input type="password" name="password" />
-      </p>
-      <p>
-        <input disabled type="text" name="code" value="000" />
-        <select disabled name="status">
-          <option value="0">Status</option>
-          <option value="1">Opened</option>
-          <option value="2">Headers received</option>
-          <option value="3">Loading</option>
-          <option value="4">Done</option>
-          <option value="200">200 OK</option>
-          <option value="400">400 Bad Request</option>
-          <option value="403">403 Forbidden</option>
-          <option value="404">404 Not Found</option>
-          <option value="500">500 Internal Server Error</option>
-          <option value="599">599 Timed Out</option>
-          <option value="999">999 Other Status</option>
-        </select>
-      </p>
-      <p>
-        <input disabled type="text" name="error" placeholder="Error" />
-        <input disabled type="text" name="warning" placeholder="Warning" />
-        <textarea disabled name="notice" placeholder="Notice(s)"></textarea>
-      </p>
-      <textarea disabled name="json"></textarea>
-    </form>
-
-
-
-
-
-
-<!-- HPAPI REQUEST FORM TEMPLATE (PRODUCTION VERSION) -->
-<!--
-    <form id="hpapi-template" class="hpapi-request hpapi-hidden">
-      <input name="txnid" />
-      <input name="url" />
-      <button name="post">Post</button>
-      <input name="timeout" />
-      <button name="ready">Ready</button>
-      <input name="key" />
-      <input name="email" />
-      <input name="password" />
-      <input name="code" value="000" />
-      <select name="status">
-        <option value="0">Status</option>
-        <option value="1">Opened</option>
-        <option value="2">Headers received</option>
-        <option value="3">Loading</option>
-        <option value="4">Done</option>
-        <option value="200">200 OK</option>
-        <option value="400">400 Bad Request</option>
-        <option value="403">403 Forbidden</option>
-        <option value="404">404 Not Found</option>
-        <option value="500">500 Internal Server Error</option>
-        <option value="599">599 Timed Out</option>
-        <option value="999">999 Other Status</option>
-      </select>
-      <input name="error" />
-      <input name="warning" />
-      <textarea name="notice"></textarea>
-      <textarea name="json"></textarea>
-    </form>
--->
-
-
-
-
-<!-- HPAPI STYLES (HUMAN READABLE VERSION) -->
     <style>
 form.hpapi-hidden {
     display: none;
@@ -369,8 +242,7 @@ form.hpapi-request textarea.completed {
 
 
 
-
-<!-- HPAPI STYLES (PRODUCTION VERSION) -->
+<!-- HPAPI CREATE NEW REQUEST FORM (PRODUCTION VERSION) -->
 <!--
     <style>
 form.hpapi-hidden {
@@ -380,8 +252,120 @@ form.hpapi-hidden * {
     display: none;
 }
     </style>
+
+    <form id="hpapi-new" class="hpapi-hidden" action="" onsubmit="return false">
+      <input type="hidden" name="json_pretty_string" value="    " />
+      <input type="text" name="url" />
+      <input type="text" name="txnid" />
+      <button name="new">New</button>
+      <button name="created">Created</button>
+      <input type="text" name="timeout" value="4" />
+      <input type="text" name="key" />
+      <input type="email" name="email" />
+      <input type="password" name="password" />
+      <input type="text" name="vendor" />
+      <input type="text" name="package" />
+      <input type="text" name="class" />
+      <input type="text" name="method" />
+      <select name="argcount">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+      <input type="text" class="argument" name="arg_1" />
+      <input type="text" class="argument" name="arg_2" />
+      <input type="text" class="argument" name="arg_3" />
+      <input type="text" class="argument" name="arg_4" />
+      <input type="text" class="argument" name="arg_5" />
+      <input type="text" class="argument" name="arg_6" />
+      <input type="text" class="argument" name="arg_7" />
+      <input type="text" class="argument" name="arg_8" />
+      <input type="text" class="argument" name="arg_9" />
+    </form>
 -->
 
+
+<!-- HPAPI REQUEST FORM TEMPLATE (HUMAN READABLE VERSION) -->
+    <form id="hpapi-template" class="hpapi-request">
+      <input type="hidden" name="txnid" />
+      <p>
+        <input disabled type="text" name="url" />
+        <button name="post">Post</button>
+      </p>
+      <p>
+        <input disabled type="text" name="timeout" />
+        <button name="ready">Ready</button>
+      </p>
+      <p>
+        <input type="text" name="key" />
+        <input type="email" name="email" />
+        <input type="password" name="password" />
+      </p>
+      <p>
+        <input disabled type="text" name="code" value="000" />
+        <select disabled name="status">
+          <option value="0">Status</option>
+          <option value="1">Opened</option>
+          <option value="2">Headers received</option>
+          <option value="3">Loading</option>
+          <option value="4">Done</option>
+          <option value="200">200 OK</option>
+          <option value="400">400 Bad Request</option>
+          <option value="403">403 Forbidden</option>
+          <option value="404">404 Not Found</option>
+          <option value="500">500 Internal Server Error</option>
+          <option value="599">599 Timed Out</option>
+          <option value="999">999 Other Status</option>
+        </select>
+      </p>
+      <p>
+        <input disabled type="text" name="error" placeholder="Error" />
+        <input disabled type="text" name="warning" placeholder="Warning" />
+        <textarea disabled name="notice" placeholder="Notice(s)"></textarea>
+      </p>
+      <textarea disabled name="json"></textarea>
+    </form>
+
+
+<!-- HPAPI REQUEST FORM TEMPLATE (PRODUCTION VERSION) -->
+<!--
+    <form id="hpapi-template" class="hpapi-request hpapi-hidden">
+      <input name="txnid" />
+      <input name="url" />
+      <button name="post">Post</button>
+      <input name="timeout" />
+      <button name="ready">Ready</button>
+      <input name="key" />
+      <input name="email" />
+      <input name="password" />
+      <input name="code" value="000" />
+      <select name="status">
+        <option value="0">Status</option>
+        <option value="1">Opened</option>
+        <option value="2">Headers received</option>
+        <option value="3">Loading</option>
+        <option value="4">Done</option>
+        <option value="200">200 OK</option>
+        <option value="400">400 Bad Request</option>
+        <option value="403">403 Forbidden</option>
+        <option value="404">404 Not Found</option>
+        <option value="500">500 Internal Server Error</option>
+        <option value="599">599 Timed Out</option>
+        <option value="999">999 Other Status</option>
+      </select>
+      <input name="error" />
+      <input name="warning" />
+      <textarea name="notice"></textarea>
+      <textarea name="json"></textarea>
+    </form>
+-->
 
 
 

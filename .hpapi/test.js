@@ -4,14 +4,15 @@
 
     var test = {
 
-        uuid : {
-            htmlId : "bab-test-get-uuid"
-            finishFn : test.getUuidFinish
+        txns : {
+            uuid: {
+                txnid : "bab-test-get-uuid"
+               ,finishFn : "this.getUuidFinish()"
+            }
         }
        ,results: {
             getUuid : null
         }
-       ,nodeUrl : "https://my.http.post/api/"
 
        ,_init : function ( ) {
             // Handle a request for uuid data
@@ -24,15 +25,15 @@
             evt.preventDefault ();
             var frm                     = evt.target.form;
             if (frm.code.value!=0) {
-                console.log ("finish(): failed to get a return value, error: "+frm.code.value+" "+frm.error.value);
+                console.log ("test._load(): failed to get a return value, error: "+frm.code.value+" "+frm.error.value);
                 return;
             }
             var obj                     = JSON.parse (frm.json.value);
+            console.log ("test._load(): return value ="+obj.response.returnValue);
             this.results[obj.txnid]     = obj;
-            console.log ("finish(): return value ="+JSON.stringify(object.response.returnValue));
-            for (c in this.uuid) {
-                if (this.uuid[c].htmlId==obj.txnid) {
-                    this.uuid[c].finishFn ();
+            for (t in this.txns) {
+                if (this.txns[t].txnid==obj.txnid) {
+                    eval (this.txns[t].finishFn);
                     return;
                 }
             }
@@ -48,8 +49,7 @@
        ,getUuid : function (evt) {
             evt.preventDefault ();
             var frm                     = document.getElementById('hpapi-new');
-            frm.url.value               = this.nodeUrl;
-            frm.txnid.value             = this.uuid.txnid;
+            frm.txnid.value             = this.txns.uuid.txnid;
             frm.class.value             = "\\Hpapi\\Utility";
             frm.method.value            = "uuid";
             frm.argcount.selectedIndex  = 2;
@@ -64,7 +64,7 @@
 
        ,getUuidFinish : function (evt) {
             // Code for rendering the data payload to the user goes here
-            alert ('UUID = '+this.results[this.uuid.htmlId].response.returnValue.name);
+            alert ('UUID = '+this.results[this.txns.uuid.txnid].response.returnValue);
         }
 
     }

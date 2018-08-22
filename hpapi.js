@@ -198,9 +198,10 @@
             // Event handlers done
             // Initialise request
                 sts.selectedIndex = 0;
-                tgt.value = '';
                 xhr.open ('POST',url,true);
                 xhr.timeout = toc;
+                console.log ('JSON to post:');
+                console.log (frm.json.value);
                 console.log ('txnid '+tid+', Setting request header Content-Type: application/json');
                 xhr.setRequestHeader ("Content-Type","application/json");
                 console.log ('txnid '+tid+', Sending request...');
