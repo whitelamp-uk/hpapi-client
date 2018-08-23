@@ -10,21 +10,22 @@
                 frm.new.addEventListener('click',this.create.bind(this));
             }
             catch (e) {
-                console.log ('hpapi._init(): could not listen to button name="new"');
+                this.log ('hpapi._init(): could not listen to button name="new"');
             }
         }
 
        ,create : function (buttonEvent) {
             buttonEvent.preventDefault ();
+            this.log ('hpapi:create(): creating new client request');
             try {
                 var frm                 = buttonEvent.target.form;
                 if (frm.txnid.value.length==0) {
-                    console.log ('hpapi.create(): txnid was not given');
+                    this.log ('hpapi.create(): txnid was not given');
                     return;
                 }
                 var r = new RegExp (/^https?\:\/\/[^\s]+/);
                 if (!r.test(frm.url.value)) {
-                    console.log ('hpapi.create(): URL is not valid');
+                    this.log ('hpapi.create(): URL is not valid');
                     return;
                 }
                 var tid                 = frm.txnid.value;
@@ -67,25 +68,40 @@
                 document.body.appendChild (pst);
                 frm.password.value      = '';
                 pst.post.addEventListener ('click',this.post.bind(this));
+                this.log ('hpapi:create(): listening for post button');
+                this.log ('hpapi:create(): reporting request is created');
                 frm.created.click();
                 return;
             }
             catch (e) {
-                console.log ('hpapi.create(): '+e);
+                this.log ('hpapi.create(): '+e);
+                return;
+            }
+        }
+
+       ,log : function (str) {
+            try {
+                this.logger         = document.getElementById('hpapi-logger').getElementsByTagName('textarea')[0];
+                this.logger.value  += str + '\n';
+            }
+            catch (e) {
+                console.log (str);
                 return;
             }
         }
 
        ,post : function (buttonEvent) {
             buttonEvent.preventDefault ();
+            this.log ('hpapi.post(): attempting request');
             try {
                 var frm = buttonEvent.target.form;
                 var tgt = frm.json;
             }
             catch (e) {
-                console.log ('hpapi.post(): '+e);
+                this.log ('hpapi.post(): '+e);
                 return;
             }
+            var lfn = this.log;
             var tid = frm.txnid.value;
             var url = frm.url.value;
             var toc = 1000*frm.timeout.value;
@@ -108,7 +124,7 @@
                         return;
                     }
                     if (xhr.responseText.length==0) {
-                        console.log ('txnid '+tid+', onreadystatechange(): READY STATE 4, NO RESPONSE TEXT');
+                        lfn ('txnid '+tid+', onreadystatechange(): READY STATE 4, NO RESPONSE TEXT');
                         return;
                     }
                     for (var idx in sts.options) {
@@ -117,7 +133,7 @@
                             break;
                         }
                     }
-                    console.log ('txnid '+tid+', onreadystatechange(): READY STATE 4, RESPONSE TEXT FOUND');
+                    lfn ('txnid '+tid+', onreadystatechange(): READY STATE 4, RESPONSE TEXT FOUND');
                     tgt.value = xhr.responseText; 
                 }
                 xhr.onerror = function() {
@@ -128,7 +144,7 @@
                         }
                     }
                     tgt.value = '002 HTTP error '+xhr.status;
-                    console.log ('txnid '+tid+', onerror(): HTTP ERROR');
+                    lfn ('txnid '+tid+', onerror(): HTTP ERROR');
                 }
                 xhr.ontimeout = function() {
                     for (var idx in sts.options) {
@@ -138,7 +154,7 @@
                         }
                     }
                     tgt.value = '001 Request timed out';
-                    console.log ('txnid '+tid+', ontimeout(): CONNECTION TIMED OUT');
+                    lfn ('txnid '+tid+', ontimeout(): CONNECTION TIMED OUT');
                 }
                 xhr.onloadend = function() {
                     var s = xhr.status;
@@ -151,13 +167,13 @@
                             break;
                         }
                     }
-                    console.log ('txnid '+tid+', onloadend(): LOADING COMPLETED');
-                    console.log ('txnid '+tid+', onloadend(): parsing codes and messages');
+                    lfn ('txnid '+tid+', onloadend(): LOADING COMPLETED');
+                    lfn ('txnid '+tid+', onloadend(): parsing codes and messages');
                     var code        = '0';
                     try {
                         var object  = JSON.parse (tgt.value);
                         var error   = object.response.error;
-                        console.log ('txnid '+tid+', onloadend(): object error='+error);
+                        this.log ('txnid '+tid+', onloadend(): object error='+error);
                         var warning = object.response.warning;
                         var notice  = object.response.notice;
                     }
@@ -166,7 +182,7 @@
                         var warning = '';
                         var notice  = '';
                     }
-                    console.log ('txnid '+tid+', onloadend(): system error='+error);
+                    lfn ('txnid '+tid+', onloadend(): system error='+error);
                     // Extract codes from error message
                     if (error!=null && error.length) {
                         parts           = error.split (' ');
@@ -191,8 +207,8 @@
                     wnm.value       = warning;
                     ntc.value       = notice;
                     tgt.classList.add ('completed');
+                    lfn ('txnid '+tid+', onloadend(): READY');
                     // Click the ready button
-                    console.log ('txnid '+tid+', onloadend(): READY');
                     rdy.click ();
                 }
             // Event handlers done
@@ -200,11 +216,11 @@
                 sts.selectedIndex = 0;
                 xhr.open ('POST',url,true);
                 xhr.timeout = toc;
-                console.log ('JSON to post:');
-                console.log (frm.json.value);
-                console.log ('txnid '+tid+', Setting request header Content-Type: application/json');
+                this.log ('JSON to post:');
+                this.log (frm.json.value);
+                this.log ('txnid '+tid+', Setting request header Content-Type: application/json');
                 xhr.setRequestHeader ("Content-Type","application/json");
-                console.log ('txnid '+tid+', Sending request...');
+                this.log ('txnid '+tid+', Sending request...');
                 xhr.send (frm.json.value);
         }
 
