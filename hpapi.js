@@ -214,6 +214,7 @@ var hpapi = {
             // Event handlers done
             // Initialise request
             sts.selectedIndex = 0;
+            this.log ('hpapi URL='+url+' timeout='+toc);
             xhr.open ('POST',url,true);
             xhr.timeout = toc;
             this.log ('JSON to post:');
