@@ -1,234 +1,130 @@
 
-(function ( ) {
+export class Hpapi {
 
-var hpapi = {
-
-        _init : function ( ) {
-        var frm                             = document.getElementById ('hpapi-new');
-            frm.reset ();
-            try {
-                frm.new.addEventListener('click',this.create.bind(this));
-            }
-            catch (e) {
-                this.log ('hpapi._init(): could not listen to button name="new"');
+    filterRequest (reqObj) {
+        if (Object(reqObj)!=reqObj) {
+            throw "Hpapi.request(): request is not an object";
+            return false;
+        }
+        if (reqObj.key==undefined || typeof(reqObj.key)!='string' || reqObj.key.length==0) {
+            throw "Hpapi.request(): request has no key or it is not a string";
+            return false;
+        }
+        if (reqObj.email==undefined || typeof(reqObj.email)!='string' || reqObj.email.length==0) {
+            throw "Hpapi.request(): request has no email or it is not a string";
+            return false;
+        }
+        if (reqObj.password==undefined || typeof(reqObj.password)!='string' || reqObj.password.length==0) {
+            throw "Hpapi.request(): request has no password or it is not a string";
+            return false;
+        }
+        if (reqObj.method==undefined || Object(reqObj.method)!=reqObj.method) {
+            throw "Hpapi.request(): request method is not an object";
+            return false;
+        }
+        if (reqObj.method.vendor==undefined || typeof(reqObj.method.vendor)!='string' || reqObj.method.vendor.length==0) {
+            throw "Hpapi.request(): request method has no vendor or it is not a string";
+            return false;
+        }
+        if (reqObj.method.package==undefined || typeof(reqObj.method.package)!='string' || reqObj.method.package.length==0) {
+            throw "Hpapi.request(): request method has no package or it is not a string";
+            return false;
+        }
+        if (reqObj.method.class==undefined || typeof(reqObj.method.class)!='string' || reqObj.method.class.length==0) {
+            throw "Hpapi.request(): request method has no class or it is not a string";
+            return false;
+        }
+        if (reqObj.method.method==undefined || typeof(reqObj.method.method)!='string' || reqObj.method.method.length==0) {
+            throw "Hpapi.request(): request method has no method or it is not a string";
+            return false;
+        }
+        return {
+            "key"       : reqObj.key
+           ,"email"     : reqObj.email
+           ,"password"  : reqObj.password
+           ,"method"    : {
+                "vendor"    :  reqObj.method.vendor
+               ,"package"   : reqObj.method.package
+               ,"class"     : reqObj.method.class
+               ,"method"    : reqObj.method.method
             }
         }
-
-       ,create : function (buttonEvent) {
-            buttonEvent.preventDefault ();
-            this.log ('hpapi:create(): creating new client request');
-            try {
-             var frm                        = buttonEvent.target.form;
-                if (frm.txnid.value.length==0) {
-                    this.log ('hpapi.create(): txnid was not given');
-                    return;
-                }
-            var r                           = new RegExp (/^https?\:\/\/[^\s]+/);
-                if (!r.test(frm.url.value)) {
-                    this.log ('hpapi.create(): URL is not valid');
-                    return;
-                }
-            var tid                         = frm.txnid.value;
-            var jps                         = frm.json_pretty_string.value;
-            var obj                         = {
-                    txnid : tid
-                   ,key : frm.key.value
-                   ,email : frm.email.value
-                   ,password : frm.password.value
-                   ,datetime : new Date().toISOString()
-                   ,method : {
-                        vendor : frm.vendor.value
-                       ,package : frm.package.value
-                       ,class : frm.class.value
-                       ,method : frm.method.value
-                       ,arguments : new Array ()
-                    }
-                }
-            var args                        = frm.getElementsByClassName ('argument');
-                for (i in args) {
-                    if (parseInt(i)!=i) {
-                        continue;
-                    }
-                    if (i<frm.argcount.selectedIndex) {
-                        obj.method.arguments.push (args[i].value);
-                    }
-                    else {
-                        args[i].value       = '';
-                    }
-                }
-            var pst                         = document.getElementById ('hpapi-template').cloneNode(true);
-                pst.setAttribute ('id',tid);
-                pst.txnid.value             = frm.txnid.value;
-                pst.url.value               = frm.url.value;
-                pst.timeout.value           = frm.timeout.value;
-                pst.key.value               = frm.key.value;
-                pst.email.value             = frm.email.value;
-                pst.password.value          = frm.password.value;
-                pst.json.value              = JSON.stringify (obj,null,jps);
-                document.body.appendChild (pst);
-                frm.password.value          = '';
-                pst.post.addEventListener ('click',this.post.bind(this));
-                this.log ('hpapi:create(): listening for post button');
-                this.log ('hpapi:create(): reporting request is created');
-                frm.created.click();
-                return;
-            }
-            catch (e) {
-                this.log ('hpapi.create(): '+e);
-                return;
-            }
-        }
-
-       ,log : function (str) {
-            try {
-                this.logger                 = document.getElementById('hpapi-logger').getElementsByTagName('textarea')[0];
-                this.logger.value          += str + '\n';
-            }
-            catch (e) {
-                console.log (str);
-                return;
-            }
-        }
-
-       ,post : function (buttonEvent) {
-            buttonEvent.preventDefault ();
-            this.log ('hpapi.post(): attempting request');
-            try {
-                var frm                     = buttonEvent.target.form;
-                var tgt                     = frm.json;
-            }
-            catch (e) {
-                this.log ('hpapi.post(): '+e);
-                return;
-            }
-        var lfn                             = this.log;
-        var tid                             = frm.txnid.value;
-        var url                             = frm.url.value;
-        var toc                             = 1000*frm.timeout.value;
-        var rdy                             = frm.ready;
-        var sts                             = frm.status;
-        var cod                             = frm.code;
-        var erm                             = frm.error;
-        var wnm                             = frm.warning;
-        var ntc                             = frm.notice;
-        var xhr = new XMLHttpRequest ();
-            // Event handlers define
-            xhr.onreadystatechange          = function() {
-                for (var idx in sts.options) {
-                    if (sts.options[idx].value==xhr.readyState) {
-                        sts.selectedIndex   = idx;
-                        break;
-                    }
-                }
-                if(xhr.readyState!=4) {
-                    return;
-                }
-                if (xhr.responseText.length==0) {
-                    lfn ('txnid '+tid+', onreadystatechange(): READY STATE 4, NO RESPONSE TEXT');
-                    return;
-                }
-                for (var idx in sts.options) {
-                    if (sts.options[idx].value==xhr.status) {
-                        sts.selectedIndex   = idx;
-                        break;
-                    }
-                }
-                lfn ('txnid '+tid+', onreadystatechange(): READY STATE 4, RESPONSE TEXT FOUND');
-                tgt.value                   = xhr.responseText; 
-            }
-            xhr.onerror = function() {
-                for (var idx in sts.options) {
-                    if (sts.options[idx].value==xhr.status) {
-                        sts.selectedIndex = idx;
-                        break;
-                    }
-                }
-                tgt.value = '002 HTTP error '+xhr.status;
-                lfn ('txnid '+tid+', onerror(): HTTP ERROR');
-            }
-            xhr.ontimeout = function() {
-                for (var idx in sts.options) {
-                    if (sts.options[idx].value==599) {
-                        sts.selectedIndex = idx;
-                        break;
-                    }
-                }
-                tgt.value = '001 Request timed out';
-                lfn ('txnid '+tid+', ontimeout(): CONNECTION TIMED OUT');
-            }
-            xhr.onloadend = function() {
-            var s = xhr.status;
-                if (s==0) {
-                    s = 999;
-                }
-                for (var idx in sts.options) {
-                    if (sts.options[idx].value==s) {
-                        sts.selectedIndex = idx;
-                        break;
-                    }
-                }
-                lfn ('txnid '+tid+', onloadend(): LOADING COMPLETED');
-                lfn ('txnid '+tid+', onloadend(): parsing codes and messages');
-            var code        = '0';
-                try {
-                var object  = JSON.parse (tgt.value);
-                var error   = object.response.error;
-                    this.log ('txnid '+tid+', onloadend(): object error='+error);
-                var warning = object.response.warning;
-                var notice  = object.response.notice;
-                }
-                catch (e) {
-                var error   = tgt.value;
-                var warning = '';
-                var notice  = '';
-                }
-                lfn ('txnid '+tid+', onloadend(): system error='+error);
-                // Extract codes from error message
-                if (error!=null && error.length) {
-                    parts           = error.split (' ');
-                    if (parts[0].match(/^[0-9]+$/)) {
-                        code    = parts[0];
-                        parts.shift ();
-                        if (parts[0].match(/^[0-9]+$/)) {
-                            for (var idx in sts.options) {
-                                if (sts.options[idx].value==parts[0]) {
-                                    sts.selectedIndex = idx;
-                                    break;
-                                }
-                            }
-                            parts.shift ();
-                        }
-                        error   = parts.join (' ');
-                    }
-                }
-                // Load codes and messages into form
-                cod.value       = code;
-                erm.value       = error;
-                wnm.value       = warning;
-                ntc.value       = notice;
-                tgt.classList.add ('completed');
-                lfn ('txnid '+tid+', onloadend(): READY');
-                // Click the ready button
-                rdy.click ();
-            }
-            // Event handlers done
-            // Initialise request
-            sts.selectedIndex = 0;
-            this.log ('hpapi URL='+url+' timeout='+toc);
-            xhr.open ('POST',url,true);
-            xhr.timeout = toc;
-            this.log ('JSON to post:');
-            this.log (frm.json.value);
-            this.log ('txnid '+tid+', Setting request header Content-Type: application/json');
-            xhr.setRequestHeader ("Content-Type","application/json");
-            this.log ('txnid '+tid+', Sending request...');
-            xhr.send (frm.json.value);
-        }
-
     }
 
-    hpapi._init ();
+    filterTimeout (timeoutSeconds) {
+        timeoutSeconds = parseInt (timeoutSeconds);
+        if (isNaN(timeoutSeconds) || timeoutSeconds<1 || timeoutSeconds>60) {
+            throw "Hpapi.request(): timeout seconds is not a sane integer (between 1 and 60)";
+            return false;
+        }
+        return timeoutSeconds;
+    }
 
+    filterUrl (url) {
+        if (typeof(url)!='string' || url.length==0) {
+            throw "Hpapi.request(): URL is not a string or it has no length";
+            return false;
+        }
+        return url;
+    }
 
-})();
+    hpapi (timeoutSecs,url,reqObj) {
+        try {
+            timeoutSecs                 = this.filterTimeout (timeoutSecs);
+            url                         = this.filterUrl (url);
+            reqObj                      = this.filterRequest (reqObj);
+        }
+        catch (e) {
+            throw e.message;
+            return false;
+        }
+        try {
+        var json                        = JSON.stringify (reqObj);
+        }
+        catch (e) {
+            throw e.message;
+            return false;
+        }
+        return new Promise (
+            function (succeeded,failed) {
+            var xhr                     = new XMLHttpRequest ();
+                xhr.timeout             = 1000 * timeoutSecs;
+                console.log ('ajaxGet(): set timeout to '+xhr.timeout);
+                xhr.onerror             = function ( ) {
+                    failed ({"xhrCode":999,"xhrStatus":"Could not connect or unknown error"});
+                };
+                xhr.onload              = function ( ) {
+                    try {
+                    var response        = JSON.parse (xhr.responseText);
+                    var error           = response.response.error;
+                    }
+                    catch (e) {
+                    var error           = xhr.responseText;
+                        if (error.length==0) {
+                            error       = xhr.status+' '+xhr.statusText;
+                        }
+                    }
+                var code                = error.split (' ');
+                    code                = code[0];
+                    if (xhr.status==200) {
+                        succeeded ({"xhrCode":xhr.status,"xhrStatus":xhr.statusText,"response":response});
+                    }
+                    else {
+                        failed ({"xhrCode":xhr.status,"xhrStatus":xhr.statusText});
+                    }
+                };
+                xhr.ontimeout   = function ( ) {
+                    failed ({"status":999,"statusText":"Request timed out"});
+                };
+                xhr.open ('POST',url,true);
+                xhr.setRequestHeader ('Content-Type','application/json');
+                xhr.send (json);
+            }
+        );
+    }
 
+    log (message) {
+        console.log (message);
+    }
+
+}
