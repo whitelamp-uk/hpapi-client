@@ -1,15 +1,15 @@
 
 export class Hpapi {
 
-    errorSplit (errorString) {
-    var parts                           = errorString.split (' ');
-    var error                           = {};
-        error.hpapiCode                 = parts[0];
+    errorSplit (errStr) {
+    var parts                           = errStr.split (' ');
+    var err                             = {};
+        err.hpapiCode                   = parts[0];
         parts.shift ();
-        error.httpCode                  = parts[0];
+        err.httpCode                    = parts[0];
         parts.shift ();
-        error.message                   = parts.join (' ');
-        return error;
+        err.message                     = parts.join (' ');
+        return err;
     }
 
     filterRequest (reqObj) {
@@ -49,15 +49,20 @@ export class Hpapi {
             throw "Hpapi.request(): request method has no method or it is not a string";
             return false;
         }
+        if (reqObj.method.arguments==undefined || Object.prototype.toString.call(reqObj.method.arguments)!='[object Array]') {
+            throw "Hpapi.request(): request method has no arguments or they are not an array";
+            return false;
+        }
         return {
             "key"       : reqObj.key
            ,"email"     : reqObj.email
            ,"password"  : reqObj.password
            ,"method"    : {
-                "vendor"    :  reqObj.method.vendor
+                "vendor"    : reqObj.method.vendor
                ,"package"   : reqObj.method.package
                ,"class"     : reqObj.method.class
                ,"method"    : reqObj.method.method
+               ,"arguments" : reqObj.method.arguments
             }
         }
     }
@@ -80,10 +85,12 @@ export class Hpapi {
     }
 
     hpapi (timeoutSecs,url,reqObj) {
+    var errorSplit                      = this.errorSplit;
         try {
             timeoutSecs                 = this.filterTimeout (timeoutSecs);
             url                         = this.filterUrl (url);
             reqObj                      = this.filterRequest (reqObj);
+            reqObj.datetime             = new Date().toUTCString ();
         }
         catch (e) {
             throw e.message;
@@ -98,8 +105,6 @@ export class Hpapi {
         }
         return new Promise (
             function (succeeded,failed) {
-            var errorSplit              = this.errorSplit;
-            var logMessage              = this.log;
             var xhr                     = new XMLHttpRequest ();
                 xhr.timeout             = 1000 * timeoutSecs;
                 xhr.onerror             = function ( ) {
@@ -109,35 +114,30 @@ export class Hpapi {
                     var fail            = false;
                     if (xhr.status==200) {
                         try {
-                        var response    = JSON.parse (xhr.responseText);
+                        var returned    = JSON.parse (xhr.responseText);
                         }
                         catch (e) {
                             fail        = true;
                         }
                         if (fail) {
-alert ('Response text could not be parsed');
-//                            logMessage ('Response text could not be parsed');
-//                            failed (errorSplit(xhr.responseText));
-failed ('ARSE');
+                            failed (errorSplit(xhr.responseText));
                         }
                         else {
-                        var error       = response.response.error;
-                            if (error.length) {
-alert ('Hpapi returned error: '+error);
-failed ('ARSE');
-//                                logMessage ('Hpapi returned error');
-//                                failed (errorSplit(error));
+                        var error       = returned.response.error;
+                            if (error) {
+                                error   = errorSplit (error);
+                                if ('diagnostic' in returned) {
+                                    error.diagnostic = returned.diagnostic;
+                                }
+                                failed (error);
                             }
                             else {
-                                succeeded (response);
+                                succeeded (returned.response);
                             }
                         }
                     }
                     else {
-alert ('HTTP status not 200');
-failed ('ARSE');
-//                        logMessage ('HTTP status not 200');
-//                        failed ({"httpCode":xhr.status,"message":xhr.statusText});
+                        failed ({"httpCode":xhr.status,"message":xhr.statusText});
                     }
                 };
                 xhr.ontimeout   = function ( ) {
