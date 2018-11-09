@@ -1,6 +1,17 @@
 
 export class Hpapi {
 
+    errorSplit (errorString) {
+    var parts                           = errorString.split (' ');
+    var error                           = {};
+        error.hpapiCode                 = parts[0];
+        parts.shift ();
+        error.httpCode                  = parts[0];
+        parts.shift ();
+        error.message                   = parts.join (' ');
+        return error;
+    }
+
     filterRequest (reqObj) {
         if (Object(reqObj)!=reqObj) {
             throw "Hpapi.request(): request is not an object";
@@ -87,34 +98,50 @@ export class Hpapi {
         }
         return new Promise (
             function (succeeded,failed) {
+            var errorSplit              = this.errorSplit;
+            var logMessage              = this.log;
             var xhr                     = new XMLHttpRequest ();
                 xhr.timeout             = 1000 * timeoutSecs;
-                console.log ('ajaxGet(): set timeout to '+xhr.timeout);
                 xhr.onerror             = function ( ) {
-                    failed ({"xhrCode":999,"xhrStatus":"Could not connect or unknown error"});
+                    failed ({"httpCode":999,"message":"Could not connect or unknown error"});
                 };
                 xhr.onload              = function ( ) {
-                    try {
-                    var response        = JSON.parse (xhr.responseText);
-                    var error           = response.response.error;
-                    }
-                    catch (e) {
-                    var error           = xhr.responseText;
-                        if (error.length==0) {
-                            error       = xhr.status+' '+xhr.statusText;
+                    var fail            = false;
+                    if (xhr.status==200) {
+                        try {
+                        var response    = JSON.parse (xhr.responseText);
+                        }
+                        catch (e) {
+                            fail        = true;
+                        }
+                        if (fail) {
+alert ('Response text could not be parsed');
+//                            logMessage ('Response text could not be parsed');
+//                            failed (errorSplit(xhr.responseText));
+failed ('ARSE');
+                        }
+                        else {
+                        var error       = response.response.error;
+                            if (error.length) {
+alert ('Hpapi returned error: '+error);
+failed ('ARSE');
+//                                logMessage ('Hpapi returned error');
+//                                failed (errorSplit(error));
+                            }
+                            else {
+                                succeeded (response);
+                            }
                         }
                     }
-                var code                = error.split (' ');
-                    code                = code[0];
-                    if (xhr.status==200) {
-                        succeeded ({"xhrCode":xhr.status,"xhrStatus":xhr.statusText,"response":response});
-                    }
                     else {
-                        failed ({"xhrCode":xhr.status,"xhrStatus":xhr.statusText});
+alert ('HTTP status not 200');
+failed ('ARSE');
+//                        logMessage ('HTTP status not 200');
+//                        failed ({"httpCode":xhr.status,"message":xhr.statusText});
                     }
                 };
                 xhr.ontimeout   = function ( ) {
-                    failed ({"status":999,"statusText":"Request timed out"});
+                    failed ({"httpCode":999,"message":"Request timed out"});
                 };
                 xhr.open ('POST',url,true);
                 xhr.setRequestHeader ('Content-Type','application/json');
