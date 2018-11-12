@@ -93,14 +93,14 @@ export class Hpapi {
             reqObj.datetime             = new Date().toUTCString ();
         }
         catch (e) {
-            throw e.message;
+            throw new Error (e.message);
             return false;
         }
         try {
         var json                        = JSON.stringify (reqObj);
         }
         catch (e) {
-            throw e.message;
+            throw new Error (e.message);
             return false;
         }
         return new Promise (
