@@ -14,43 +14,43 @@ export class Hpapi {
 
     filterRequest (reqObj) {
         if (Object(reqObj)!=reqObj) {
-            throw "Hpapi.request(): request is not an object";
+            throw new Error ('Hpapi.request(): request is not an object');
             return false;
         }
         if (reqObj.key==undefined || typeof(reqObj.key)!='string' || reqObj.key.length==0) {
-            throw "Hpapi.request(): request has no key or it is not a string";
+            throw new Error ('Hpapi.request(): request has no key or it is not a string');
             return false;
         }
         if (reqObj.email==undefined || typeof(reqObj.email)!='string' || reqObj.email.length==0) {
-            throw "Hpapi.request(): request has no email or it is not a string";
+            throw new Error ('Hpapi.request(): request has no email or it is not a string');
             return false;
         }
         if (reqObj.password==undefined || typeof(reqObj.password)!='string' || reqObj.password.length==0) {
-            throw "Hpapi.request(): request has no password or it is not a string";
+            throw new Error ('Hpapi.request(): request has no password or it is not a string');
             return false;
         }
         if (reqObj.method==undefined || Object(reqObj.method)!=reqObj.method) {
-            throw "Hpapi.request(): request method is not an object";
+            throw new Error ('Hpapi.request(): request method is not an object');
             return false;
         }
         if (reqObj.method.vendor==undefined || typeof(reqObj.method.vendor)!='string' || reqObj.method.vendor.length==0) {
-            throw "Hpapi.request(): request method has no vendor or it is not a string";
+            throw new Error ('Hpapi.request(): request method has no vendor or it is not a string');
             return false;
         }
         if (reqObj.method.package==undefined || typeof(reqObj.method.package)!='string' || reqObj.method.package.length==0) {
-            throw "Hpapi.request(): request method has no package or it is not a string";
+            throw new Error ('Hpapi.request(): request method has no package or it is not a string');
             return false;
         }
         if (reqObj.method.class==undefined || typeof(reqObj.method.class)!='string' || reqObj.method.class.length==0) {
-            throw "Hpapi.request(): request method has no class or it is not a string";
+            throw new Error ('Hpapi.request(): request method has no class or it is not a string');
             return false;
         }
         if (reqObj.method.method==undefined || typeof(reqObj.method.method)!='string' || reqObj.method.method.length==0) {
-            throw "Hpapi.request(): request method has no method or it is not a string";
+            throw new Error ('Hpapi.request(): request method has no method or it is not a string');
             return false;
         }
         if (reqObj.method.arguments==undefined || Object.prototype.toString.call(reqObj.method.arguments)!='[object Array]') {
-            throw "Hpapi.request(): request method has no arguments or they are not an array";
+            throw new Error ('Hpapi.request(): request method has no arguments or they are not an array');
             return false;
         }
         return {
@@ -70,7 +70,7 @@ export class Hpapi {
     filterTimeout (timeoutSeconds) {
         timeoutSeconds = parseInt (timeoutSeconds);
         if (isNaN(timeoutSeconds) || timeoutSeconds<1 || timeoutSeconds>60) {
-            throw "Hpapi.request(): timeout seconds is not a sane integer (between 1 and 60)";
+            throw new Error ('Hpapi.request(): timeout seconds is not a sane integer (between 1 and 60)');
             return false;
         }
         return timeoutSeconds;
@@ -78,7 +78,7 @@ export class Hpapi {
 
     filterUrl (url) {
         if (typeof(url)!='string' || url.length==0) {
-            throw "Hpapi.request(): URL is not a string or it has no length";
+            throw new Error ('Hpapi.request(): URL is not a string or it has no length');
             return false;
         }
         return url;
