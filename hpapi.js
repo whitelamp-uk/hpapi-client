@@ -103,51 +103,57 @@ export class Hpapi {
             throw new Error (e.message);
             return false;
         }
-        return new Promise (
-            function (succeeded,failed) {
-            var xhr                     = new XMLHttpRequest ();
-                xhr.timeout             = 1000 * timeoutSecs;
-                xhr.onerror             = function ( ) {
-                    failed ({"httpCode":999,"message":"Could not connect or unknown error"});
-                };
-                xhr.onload              = function ( ) {
-                    var fail            = false;
-                    if (xhr.status==200) {
-                        try {
-                        var returned    = JSON.parse (xhr.responseText);
-                        }
-                        catch (e) {
-                            fail        = true;
-                        }
-                        if (fail) {
-                            failed (errorSplit(xhr.responseText));
-                        }
-                        else {
-                        var error       = returned.response.error;
-                            if (error) {
-                                error   = errorSplit (error);
-                                if ('diagnostic' in returned) {
-                                    error.diagnostic = returned.diagnostic;
-                                }
-                                failed (error);
+        try {
+            return new Promise (
+                function (succeeded,failed) {
+                var xhr                     = new XMLHttpRequest ();
+                    xhr.timeout             = 1000 * timeoutSecs;
+                    xhr.onerror             = function ( ) {
+                        failed ({"httpCode":999,"message":"Could not connect or unknown error"});
+                    };
+                    xhr.onload              = function ( ) {
+                        var fail            = false;
+                        if (xhr.status==200) {
+                            try {
+                            var returned    = JSON.parse (xhr.responseText);
+                            }
+                            catch (e) {
+                                fail        = true;
+                            }
+                            if (fail) {
+                                failed (errorSplit(xhr.responseText));
                             }
                             else {
-                                succeeded (returned.response);
+                            var error       = returned.response.error;
+                                if (error) {
+                                    error   = errorSplit (error);
+                                    if ('diagnostic' in returned) {
+                                        error.diagnostic = returned.diagnostic;
+                                    }
+                                    failed (error);
+                                }
+                                else {
+                                    succeeded (returned.response);
+                                }
                             }
                         }
-                    }
-                    else {
-                        failed ({"httpCode":xhr.status,"message":xhr.statusText});
-                    }
-                };
-                xhr.ontimeout   = function ( ) {
-                    failed ({"httpCode":999,"message":"Request timed out"});
-                };
-                xhr.open ('POST',url,true);
-                xhr.setRequestHeader ('Content-Type','application/json');
-                xhr.send (json);
-            }
-        );
+                        else {
+                            failed ({"httpCode":xhr.status,"message":xhr.statusText});
+                        }
+                    };
+                    xhr.ontimeout   = function ( ) {
+                        failed ({"httpCode":999,"message":"Request timed out"});
+                    };
+                    xhr.open ('POST',url,true);
+                    xhr.setRequestHeader ('Content-Type','application/json');
+                    xhr.send (json);
+                }
+            );
+        }
+        catch (e) {
+            console.log (e.message);
+            return false;
+        }
     }
 
     log (message) {
