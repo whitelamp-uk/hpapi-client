@@ -85,21 +85,21 @@ export class Hpapi {
     }
 
     hpapi (timeoutSecs,url,reqObj) {
-    var errorSplit                      = this.errorSplit;
+    var errorSplit                          = this.errorSplit;
         try {
-            timeoutSecs                 = this.filterTimeout (timeoutSecs);
-            url                         = this.filterUrl (url);
-        var request                     = this.filterRequest (reqObj);
-            request.datetime            = new Date().toUTCString ();
+            timeoutSecs                     = this.filterTimeout (timeoutSecs);
+            url                             = this.filterUrl (url);
+        var request                         = this.filterRequest (reqObj);
+            request.datetime                = new Date().toUTCString ();
             if ('password' in reqObj) {
-                request.password        = reqObj.password;
+                request.password            = reqObj.password;
             }
             else if (this.tokenExpired()) {
                 throw new Error ('tokenExpired');
                 return false;
             }
             else {
-                request.token           = this.token;
+                request.token               = this.token;
             }
         }
         catch (e) {
@@ -107,15 +107,15 @@ export class Hpapi {
             return false;
         }
         try {
-        var json                        = JSON.stringify (request);
+        var json                            = JSON.stringify (request);
         }
         catch (e) {
             throw new Error (e.message);
             return false;
         }
         try {
+        var tokenSet                        = this.tokenSet.bind (this);
             return new Promise (
-            var tokenSet                    = this.tokenSet.bind (this);
                 function (succeeded,failed) {
                 var xhr                     = new XMLHttpRequest ();
                     xhr.timeout             = 1000 * timeoutSecs;
