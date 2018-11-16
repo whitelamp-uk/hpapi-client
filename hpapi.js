@@ -1,6 +1,11 @@
 
 export class Hpapi {
 
+    constructor ( ) {
+        this.token                      = '';
+        this.tokenExpires               = 0;
+    }
+
     errorSplit (errStr) {
     var parts                           = errStr.split (' ');
     var err                             = {};
@@ -23,10 +28,6 @@ export class Hpapi {
         }
         if (reqObj.email==undefined || typeof(reqObj.email)!='string' || reqObj.email.length==0) {
             throw new Error ('Hpapi.filterRequest(): request has no email or it is not a string');
-            return false;
-        }
-        if (reqObj.password==undefined || typeof(reqObj.password)!='string' || reqObj.password.length==0) {
-            throw new Error ('Hpapi.filterRequest(): request has no password or it is not a string');
             return false;
         }
         if (reqObj.method==undefined || Object(reqObj.method)!=reqObj.method) {
@@ -56,7 +57,6 @@ export class Hpapi {
         return {
             "key"       : reqObj.key
            ,"email"     : reqObj.email
-           ,"password"  : reqObj.password
            ,"method"    : {
                 "vendor"    : reqObj.method.vendor
                ,"package"   : reqObj.method.package
@@ -89,15 +89,25 @@ export class Hpapi {
         try {
             timeoutSecs                 = this.filterTimeout (timeoutSecs);
             url                         = this.filterUrl (url);
-            reqObj                      = this.filterRequest (reqObj);
-            reqObj.datetime             = new Date().toUTCString ();
+        var request                     = this.filterRequest (reqObj);
+            request.datetime            = new Date().toUTCString ();
+            if ('password' in reqObj) {
+                request.password        = reqObj.password;
+            }
+            else if (this.tokenExpired()) {
+                throw new Error ('tokenExpired');
+                return false;
+            }
+            else {
+                request.token           = this.token;
+            }
         }
         catch (e) {
             throw new Error (e.message);
             return false;
         }
         try {
-        var json                        = JSON.stringify (reqObj);
+        var json                        = JSON.stringify (request);
         }
         catch (e) {
             throw new Error (e.message);
@@ -105,6 +115,7 @@ export class Hpapi {
         }
         try {
             return new Promise (
+            var tokenSet                    = this.tokenSet.bind (this);
                 function (succeeded,failed) {
                 var xhr                     = new XMLHttpRequest ();
                     xhr.timeout             = 1000 * timeoutSecs;
@@ -133,6 +144,9 @@ export class Hpapi {
                                     failed (error);
                                 }
                                 else {
+                                    if ('token' in returned.response) {
+                                        tokenSet (returned.response.token,returned.response.tokenExpires);
+                                    }
                                     succeeded (returned.response);
                                 }
                             }
@@ -158,6 +172,16 @@ export class Hpapi {
 
     log (message) {
         console.log (message);
+    }
+
+    tokenExpired ( ) {
+       return 1000*this.tokenExpires < Date.now();
+    }
+
+    tokenSave (token,timestamp) {
+        this.token          = token;
+        this.tokenExpires   = timestamp;
+        console.log ('Saved token, expires '+this.tokenExpires);
     }
 
 }
