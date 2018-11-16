@@ -114,7 +114,7 @@ export class Hpapi {
             return false;
         }
         try {
-        var tokenSet                        = this.tokenSet.bind (this);
+        var hpapi                           = this;
             return new Promise (
                 function (succeeded,failed) {
                 var xhr                     = new XMLHttpRequest ();
@@ -139,13 +139,14 @@ export class Hpapi {
                                 if (error) {
                                     error   = errorSplit (error);
                                     if ('diagnostic' in returned) {
-                                        error.diagnostic = returned.diagnostic;
+                                        error.diagnostic    = returned.diagnostic;
                                     }
                                     failed (error);
                                 }
                                 else {
                                     if ('token' in returned.response) {
-                                        tokenSet (returned.response.token,returned.response.tokenExpires);
+                                        hpapi.token         = returned.response.token
+                                        hpapi.tokenExpires  = returned.response.tokenExpires;
                                     }
                                     succeeded (returned.response);
                                 }
