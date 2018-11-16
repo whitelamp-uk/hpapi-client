@@ -182,7 +182,6 @@ export class Hpapi {
     tokenSave (token,timestamp) {
         this.token          = token;
         this.tokenExpires   = timestamp;
-        console.log ('Saved token, expires '+this.tokenExpires);
     }
 
 }
