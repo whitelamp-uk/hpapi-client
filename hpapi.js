@@ -200,11 +200,11 @@ export class Hpapi {
     tokenSave (token,timestamp) {
         this.token          = token;
         this.tokenExpires   = timestamp;
+        console.log ('Hpapi setting token timeout');
         this.tokenTOSet ();
     }
 
     tokenTOSet ( ) {
-        console.log ('Hpapi setting token timeout');
         this.tokenTOClear ();
         this.tokenTO = setTimeout (this.tokenExpire.bind(this),(1000*this.tokenExpires)-Date.now());
     }
