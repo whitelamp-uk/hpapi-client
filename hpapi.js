@@ -147,6 +147,7 @@ export class Hpapi {
                                     if ('token' in returned.response) {
                                         hpapi.token         = returned.response.token
                                         hpapi.tokenExpires  = returned.response.tokenExpires;
+                                        hpapi.tokenTOSet();
                                     }
                                     succeeded (returned.response);
                                 }
@@ -195,13 +196,6 @@ export class Hpapi {
 
     tokenExpired ( ) {
        return 1000*this.tokenExpires < Date.now();
-    }
-
-    tokenSave (token,timestamp) {
-        this.token          = token;
-        this.tokenExpires   = timestamp;
-        console.log ('Hpapi setting token timeout');
-        this.tokenTOSet ();
     }
 
     tokenTOSet ( ) {
