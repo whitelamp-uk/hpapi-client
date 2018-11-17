@@ -18,6 +18,7 @@ export class Hpapi {
     }
 
     filterRequest (reqObj) {
+alert (reqObj);
         if (Object(reqObj)!=reqObj) {
             throw new Error ('Hpapi.filterRequest(): request is not an object');
             return false;
