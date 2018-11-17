@@ -175,9 +175,9 @@ export class Hpapi {
         console.log (message);
     }
 
-    request (request) {
+    request (timeout,url,request) {
         try {
-            return this.hpapi (this.cfg.timeout,this.cfg.url,request);
+            return this.hpapi (timeout,url,request);
         }
         catch (e) {
             return new Promise (
