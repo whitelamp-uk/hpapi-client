@@ -175,6 +175,24 @@ export class Hpapi {
         console.log (message);
     }
 
+    request (request) {
+        try {
+            return this.hpapi (this.cfg.timeout,this.cfg.url,request);
+        }
+        catch (e) {
+            return new Promise (
+                function (succeeded,failed) {
+                    failed ({"httpCode":999,"message":e.message});
+                }
+            );
+        }
+    }
+
+    tokenExpire (token,timestamp) {
+        this.token          = '';
+        this.tokenExpires   = 0;
+    }
+
     tokenExpired ( ) {
        return 1000*this.tokenExpires < Date.now();
     }
@@ -182,6 +200,19 @@ export class Hpapi {
     tokenSave (token,timestamp) {
         this.token          = token;
         this.tokenExpires   = timestamp;
+        this.tokenTOSet ();
+    }
+
+    tokenTOSet ( ) {
+        this.tokenTOClear ();
+        this.tokenTO = setTimeout (this.tokenExpire.bind(this),(1000*timestamp)-Date.now());
+    }
+
+    tokenTOClear ( ) {
+        if ('tokenTO' in this) {
+            clearTimeout (this.tokenTO);
+            delete this.tokenTO;
+        }
     }
 
 }
