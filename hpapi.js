@@ -205,7 +205,7 @@ export class Hpapi {
 
     tokenTOSet ( ) {
         this.tokenTOClear ();
-        this.tokenTO = setTimeout (this.tokenExpire.bind(this),(1000*timestamp)-Date.now());
+        this.tokenTO = setTimeout (this.tokenExpire.bind(this),(1000*this.tokenExpires)-Date.now());
     }
 
     tokenTOClear ( ) {
