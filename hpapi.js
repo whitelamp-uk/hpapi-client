@@ -23,8 +23,8 @@ export class Hpapi {
             throw new Error ('Hpapi.filterRequest(): request is not an object');
             return false;
         }
-        if (reqObj.key==undefined || typeof(reqObj.key)!='string' || reqObj.key.length==0) {
-            throw new Error ('Hpapi.filterRequest(): request has no key or it is not a string');
+        if (reqObj.key!=undefined && (typeof(reqObj.key)!='string' || reqObj.key.length==0)) {
+            throw new Error ('Hpapi.filterRequest(): request key is empty or not a string');
             return false;
         }
         if (reqObj.email==undefined || typeof(reqObj.email)!='string' || reqObj.email.length==0) {
@@ -55,9 +55,8 @@ export class Hpapi {
             throw new Error ('Hpapi.filterRequest(): request method has no arguments or they are not an array');
             return false;
         }
-        return {
-            "key"       : reqObj.key
-           ,"email"     : reqObj.email
+    var obj = {
+            "email"     : reqObj.email
            ,"method"    : {
                 "vendor"    : reqObj.method.vendor
                ,"package"   : reqObj.method.package
@@ -65,7 +64,10 @@ export class Hpapi {
                ,"method"    : reqObj.method.method
                ,"arguments" : reqObj.method.arguments
             }
+        if (reqObj.key!=undefined) {
+            obj.key = reqObj.key;
         }
+        return obj;
     }
 
     filterTimeout (timeoutSeconds) {
