@@ -64,7 +64,8 @@ export class Hpapi {
                ,"method"    : reqObj.method.method
                ,"arguments" : reqObj.method.arguments
             }
-        if (reqObj.key!=undefined) {
+        }
+        if ('key' in reqObj) {
             obj.key = reqObj.key;
         }
         return obj;
