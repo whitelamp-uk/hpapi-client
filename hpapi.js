@@ -110,6 +110,7 @@ export class Hpapi {
             throw new Error (e.message);
             return false;
         }
+        console.log ('hpapi(): request object = '+JSON.stringify(request,null,'    '));
         try {
         var json                            = JSON.stringify (request);
         }
