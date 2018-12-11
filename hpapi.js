@@ -132,25 +132,29 @@ export class Hpapi {
                         if (xhr.status==200) {
                             try {
                             var returned    = JSON.parse (xhr.responseText);
+                                console.log ('hpapi(): returned object = '+JSON.stringify(returned,null,'    '));
                             }
                             catch (e) {
+                                console.log ('hpapi(): response text = '+xhr.responseText);
                                 fail        = true;
                             }
                             if (fail) {
                                 failed (errorSplit(xhr.responseText));
                             }
                             else {
+                                if ('diagnostic' in returned) {
+                                }
                             var error       = returned.response.error;
                                 if (error) {
                                     error   = errorSplit (error);
-                                    if ('diagnostic' in returned) {
-                                        error.diagnostic    = returned.diagnostic;
-                                    }
+                                    error.diagnostic        = returned.diagnostic;
                                     failed (error);
                                 }
                                 else {
-                                    if ('token' in returned.response) {
-                                        hpapi.token         = returned.response.token
+                                    if ('tokenExpires' in returned.response) {
+                                        if ('token' in returned.response) {
+                                            hpapi.token     = returned.response.token
+                                        }
                                         hpapi.tokenExpires  = returned.response.tokenExpires;
                                         hpapi.tokenTOSet();
                                     }
@@ -194,19 +198,23 @@ export class Hpapi {
         }
     }
 
-    tokenExpire (token,timestamp) {
-        this.token          = '';
-        this.tokenExpires   = 0;
-    }
-
     tokenExpired ( ) {
        return 1000*this.tokenExpires < Date.now();
     }
 
+    tokenPurge (token,timestamp) {
+        console.log ('Hpapi purging token');
+        this.token          = '';
+        this.tokenExpires   = 0;
+    }
+
     tokenTOSet ( ) {
         this.tokenTOClear ();
-        console.log ('Hpapi setting token timeout');
-        this.tokenTO = setTimeout (this.tokenExpire.bind(this),(1000*this.tokenExpires)-Date.now());
+        console.log ('Now = '+Date.now());
+        console.log ('Then = '+(1000*this.tokenExpires));
+    var expireMs            = (1000*this.tokenExpires) - Date.now();
+        console.log ('Hpapi setting token timeout @'+expireMs);
+        this.tokenTO = setTimeout (this.tokenPurge.bind(this),expireMs);
     }
 
     tokenTOClear ( ) {
