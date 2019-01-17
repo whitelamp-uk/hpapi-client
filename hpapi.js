@@ -125,7 +125,9 @@ export class Hpapi {
                 var xhr                     = new XMLHttpRequest ();
                     xhr.timeout             = 1000 * timeoutSecs;
                     xhr.onerror             = function ( ) {
-                        failed ({"httpCode":999,"message":"Could not connect or unknown error"});
+
+                        throw new Error ('999 Could not connect or unknown error');
+//                        failed ({"httpCode":999,"message":"Could not connect or unknown error"});
                     };
                     xhr.onload              = function ( ) {
                         var fail            = false;
@@ -139,16 +141,18 @@ export class Hpapi {
                                 fail        = true;
                             }
                             if (fail) {
-                                failed (errorSplit(xhr.responseText));
+                                throw new Error (xhr.responseText);
+//                                failed (errorSplit(xhr.responseText));
                             }
                             else {
-                                if ('diagnostic' in returned) {
-                                }
                             var error       = returned.response.error;
                                 if (error) {
-                                    error   = errorSplit (error);
-                                    error.diagnostic        = returned.diagnostic;
-                                    failed (error);
+                                    throw new Error (error);
+//                                    error   = errorSplit (error);
+//                                    if ('diagnostic' in returned) {
+//                                        error.diagnostic    = returned.diagnostic;
+//                                    }
+//                                    failed (error);
                                 }
                                 else {
                                     if ('tokenExpires' in returned.response) {
@@ -163,11 +167,13 @@ export class Hpapi {
                             }
                         }
                         else {
-                            failed ({"httpCode":xhr.status,"message":xhr.statusText});
+                            throw new Error (xhr.status+' '+xhr.statusText);
+//                            failed ({"httpCode":xhr.status,"message":xhr.statusText});
                         }
                     };
                     xhr.ontimeout   = function ( ) {
-                        failed ({"httpCode":999,"message":"Request timed out"});
+                        throw new Error ('999 Request timed out');
+//                        failed ({"httpCode":999,"message":"Request timed out"});
                     };
                     xhr.open ('POST',url,true);
                     xhr.setRequestHeader ('Content-Type','application/json');
@@ -190,11 +196,12 @@ export class Hpapi {
             return this.hpapi (timeout,url,request);
         }
         catch (e) {
-            return new Promise (
-                function (succeeded,failed) {
-                    failed ({"httpCode":999,"message":e.message});
-                }
-            );
+            throw new Error (e.message);
+//            return new Promise (
+//                function (succeeded,failed) {
+//                    failed ({"httpCode":999,"message":e.message});
+//                }
+//            );
         }
     }
 
